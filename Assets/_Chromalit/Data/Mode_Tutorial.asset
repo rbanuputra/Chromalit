@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0976a96af2e435592845458decae8b, type: 3}
   m_Name: Mode_Tutorial
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Core.GameMode
-  modeName: 
+  modeName: Tutorial
   maxStackPerColor: 3
   collectibleColorDuration: 45

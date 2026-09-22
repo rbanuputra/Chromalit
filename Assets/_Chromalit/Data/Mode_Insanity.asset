@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc0976a96af2e435592845458decae8b, type: 3}
   m_Name: Mode_Insanity
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Core.GameMode
-  modeName: 
-  maxStackPerColor: 3
+  modeName: Sanity
+  maxStackPerColor: 1
   collectibleColorDuration: 45
