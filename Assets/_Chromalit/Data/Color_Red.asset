@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c6824ff67de345cc978534db263d23a, type: 3}
+  m_Name: Color_Red
+  m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Color.ColorData
+  colorName: Merah
+  colorType: 1
+  displayColor: {r: 0.90588236, g: 0.29803923, b: 0.23529412, a: 1}
+  speedMultiplier: 1
+  jumpMultiplier: 1
+  immuneToFire: 1
+  immuneToPoison: 0
+  immuneToElectric: 0
+  canSwim: 0
+  canMeltIce: 1
+  canActivateElectricPanel: 0
+  neutralizedByWater: 1
