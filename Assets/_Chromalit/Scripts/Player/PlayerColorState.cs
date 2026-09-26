@@ -87,9 +87,6 @@ namespace Chromalit.Player
             _currentColor = newColor;
             _colorSource = source;
 
-            // Tint sprite
-            _spriteRenderer.color = newColor.displayColor;
-
             // Apply buff/debuff ke PlayerController
             _playerController.SetSpeedModifier(newColor.speedMultiplier);
             _playerController.SetJumpModifier(newColor.jumpMultiplier);
@@ -124,7 +121,7 @@ namespace Chromalit.Player
             _countdownTimer = 0f;
             _countdownActive = false;
 
-            _spriteRenderer.color = defaultColor.displayColor;
+            _spriteRenderer.color = UnityEngine.Color.white;
             _playerController.SetSpeedModifier(1f);
             _playerController.SetJumpModifier(1f);
 

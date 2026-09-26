@@ -1537,8 +1537,8 @@ Transform:
   m_GameObject: {fileID: 767972128}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.45, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.025, y: 0.363, z: 0}
+  m_LocalScale: {x: 1, y: 0.1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1942240826}
@@ -1555,7 +1555,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eae05caf0cb1443eb5bd545aa4060ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Player.PlayerGroundCheck
-  checkSize: {x: 0.4, y: 0.05}
+  checkSize: {x: 0.4, y: 0.01}
 --- !u!1 &809081044
 GameObject:
   m_ObjectHideFlags: 0
@@ -3921,6 +3921,8 @@ GameObject:
   - component: {fileID: 1942240827}
   - component: {fileID: 1942240828}
   - component: {fileID: 1942240829}
+  - component: {fileID: 1942240831}
+  - component: {fileID: 1942240830}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3946,7 +3948,7 @@ MonoBehaviour:
   fallMultiplier: 2.5
   lowJumpMultiplier: 2
   groundCheckPoint: {fileID: 767972129}
-  groundCheckSize: {x: 0.4, y: 0.05}
+  groundCheckSize: {x: 0.3, y: 0.1}
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -3986,8 +3988,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 1, y: 1}
+  m_Offset: {x: 0.030081868, y: 0.640587}
+  m_Size: {x: 0.51619554, y: 0.5815084}
   m_Direction: 0
 --- !u!50 &1942240824
 Rigidbody2D:
@@ -4065,7 +4067,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: 7636064740273767555, guid: f8c96e8f9ba7ad64daabbd6549284bc7, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -4084,8 +4086,8 @@ Transform:
   m_GameObject: {fileID: 1942240821}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8, y: 1, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.8, z: 1}
+  m_LocalPosition: {x: -8, y: -1.37, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 767972129}
@@ -4141,6 +4143,50 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd42dd86920f420b9d8aebc9a8fafdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Core.CheckpointSystem
+--- !u!114 &1942240830
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942240821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29d4400e93d53014fafe721895e63aad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Player.PlayerAnimationSwapper
+  baseController: {fileID: 9100000, guid: f46fcf6f31cfe924eac9303e031153b2, type: 2}
+  colorAnimSets:
+  - colorType: 1
+    controller: {fileID: 9100000, guid: 9ee9d153d97c67b4faff1848bd65bbd7, type: 2}
+  - colorType: 2
+    controller: {fileID: 9100000, guid: 0943a8ccbf720bb40b80a25e92b7fe22, type: 2}
+  - colorType: 4
+    controller: {fileID: 9100000, guid: 1a0945680077b1c408265a921e9576da, type: 2}
+  - colorType: 3
+    controller: {fileID: 9100000, guid: 315b45540f74b534989f1f4840578609, type: 2}
+--- !u!95 &1942240831
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1942240821}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: f46fcf6f31cfe924eac9303e031153b2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2031082819
 GameObject:
   m_ObjectHideFlags: 0

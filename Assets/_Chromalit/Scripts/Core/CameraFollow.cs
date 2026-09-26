@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Chromalit.Core
 {
@@ -26,20 +27,30 @@ namespace Chromalit.Core
         {
             if (groundTransform == null || _cam == null) return;
 
-            // Hitung lebar ground dari scale
-            float groundHalfWidth = groundTransform.localScale.x / 2f;
-            float groundLeft = groundTransform.position.x - groundHalfWidth;
-            float groundRight = groundTransform.position.x + groundHalfWidth;
+            float groundLeft, groundRight, groundTop;
 
-            // Hitung setengah lebar kamera (orthographic)
+            // Cek apakah ground pakai Tilemap
+            var tilemap = groundTransform.GetComponent<UnityEngine.Tilemaps.Tilemap>();
+            if (tilemap != null)
+            {
+                tilemap.CompressBounds();
+                var bounds = tilemap.localBounds;
+                groundLeft = groundTransform.position.x + bounds.min.x;
+                groundRight = groundTransform.position.x + bounds.max.x;
+                groundTop = groundTransform.position.y + bounds.max.y;
+            }
+            else
+            {
+                float groundHalfWidth = groundTransform.localScale.x / 2f;
+                groundLeft = groundTransform.position.x - groundHalfWidth;
+                groundRight = groundTransform.position.x + groundHalfWidth;
+                groundTop = groundTransform.position.y + (groundTransform.localScale.y / 2f);
+            }
+
             float camHalfWidth = _cam.orthographicSize * _cam.aspect;
 
-            // Clamp supaya kamera nggak nunjukin area di luar ground
             _minX = groundLeft + camHalfWidth;
             _maxX = groundRight - camHalfWidth;
-
-            // Batas bawah kamera = atas ground
-            float groundTop = groundTransform.position.y + (groundTransform.localScale.y / 2f);
             _minY = groundTop + _cam.orthographicSize * 0.3f;
         }
 

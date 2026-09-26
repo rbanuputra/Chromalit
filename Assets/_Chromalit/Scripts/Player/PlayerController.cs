@@ -46,6 +46,7 @@ namespace Chromalit.Player
         private static readonly int AnimIsRunning = Animator.StringToHash("isRunning");
         private static readonly int AnimIsGrounded = Animator.StringToHash("isGrounded");
         private static readonly int AnimYVelocity = Animator.StringToHash("yVelocity");
+        private static readonly int AnimInWater = Animator.StringToHash("inWater");
 
         private void Awake()
         {
@@ -211,6 +212,12 @@ namespace Chromalit.Player
         public void SetJumpModifier(float modifier)
         {
             _jumpModifier = modifier;
+        }
+
+        public void SetInWater(bool value)
+        {
+            if (_animator != null)
+                _animator.SetBool(AnimInWater, value);
         }
 
         public bool IsGrounded => _isGrounded;
