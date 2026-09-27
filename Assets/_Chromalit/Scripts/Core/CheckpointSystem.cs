@@ -19,20 +19,24 @@ namespace Chromalit.Core
 
         private LevelSnapshot _lastCheckpoint;
         private bool _hasCheckpoint;
+        private Vector3 _startPosition;
 
         // Cached
         private PlayerColorState _colorState;
         private ColorInventory _inventory;
+        private Rigidbody2D _rb;
 
         private void Awake()
         {
             _colorState = GetComponent<PlayerColorState>();
             _inventory = GetComponent<ColorInventory>();
+            _rb = GetComponent<Rigidbody2D>();
+            _startPosition = transform.position;
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R) && _hasCheckpoint)
+            if (Input.GetKeyDown(KeyCode.R))
             {
                 Restore();
             }
@@ -43,13 +47,9 @@ namespace Chromalit.Core
         /// </summary>
         public void SaveCheckpoint()
         {
-            // Snapshot inventory
             _lastCheckpoint.inventory = _inventory.TakeSnapshot();
-
-            // Snapshot posisi player
             _lastCheckpoint.playerPosition = transform.position;
 
-            // Snapshot collectible yang sudah diambil
             ColorCollectible[] allCollectibles = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
             var collectedIds = new System.Collections.Generic.List<string>();
             foreach (var c in allCollectibles)
@@ -58,7 +58,6 @@ namespace Chromalit.Core
             }
             _lastCheckpoint.collectedItemIds = collectedIds.ToArray();
 
-            // Snapshot bom yang sudah meledak
             PaintBomb[] allBombs = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
             var explodedIds = new System.Collections.Generic.List<string>();
             foreach (var b in allBombs)
@@ -73,10 +72,32 @@ namespace Chromalit.Core
 
         /// <summary>
         /// Kembalikan semua kondisi ke checkpoint terakhir.
+        /// Kalau belum ada checkpoint, respawn ke posisi awal level.
         /// </summary>
         public void Restore()
         {
-            if (!_hasCheckpoint) return;
+            // Reset velocity biar player nggak lanjut gerak setelah respawn
+            if (_rb != null)
+            {
+                _rb.linearVelocity = Vector2.zero;
+            }
+
+            // Reset warna ke Putih
+            _colorState.Neutralize();
+
+            if (!_hasCheckpoint)
+            {
+                // Belum ada checkpoint — respawn ke posisi awal
+                transform.position = _startPosition;
+                _inventory.ClearAll();
+
+                // Reset semua collectible dan bom ke kondisi awal
+                ResetAllCollectibles();
+                ResetAllBombs();
+
+                Debug.Log("No checkpoint — restored to start position!");
+                return;
+            }
 
             // Restore inventory
             _inventory.RestoreSnapshot(_lastCheckpoint.inventory);
@@ -84,10 +105,7 @@ namespace Chromalit.Core
             // Restore posisi
             transform.position = _lastCheckpoint.playerPosition;
 
-            // Reset warna ke Putih
-            _colorState.Neutralize();
-
-            // Restore collectible — yang belum diambil saat checkpoint, munculkan kembali
+            // Restore collectible
             ColorCollectible[] allCollectibles = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
             foreach (var c in allCollectibles)
             {
@@ -97,17 +115,15 @@ namespace Chromalit.Core
 
                 if (wasCollectedAtCheckpoint)
                 {
-                    // Sudah diambil sebelum checkpoint, tetap hilang
                     c.gameObject.SetActive(false);
                 }
                 else
                 {
-                    // Belum diambil saat checkpoint, munculkan kembali
                     c.ResetCollectible();
                 }
             }
 
-            // Restore bom — yang belum meledak saat checkpoint, munculkan kembali
+            // Restore bom
             PaintBomb[] allBombs = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
             foreach (var b in allBombs)
             {
@@ -126,6 +142,24 @@ namespace Chromalit.Core
             }
 
             Debug.Log("Restored to checkpoint!");
+        }
+
+        private void ResetAllCollectibles()
+        {
+            ColorCollectible[] all = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
+            foreach (var c in all)
+            {
+                c.ResetCollectible();
+            }
+        }
+
+        private void ResetAllBombs()
+        {
+            PaintBomb[] all = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
+            foreach (var b in all)
+            {
+                b.ResetBomb();
+            }
         }
 
         public bool HasCheckpoint => _hasCheckpoint;
