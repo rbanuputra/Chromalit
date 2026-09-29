@@ -25,7 +25,7 @@ namespace Chromalit.Color
         [SerializeField] private GameMode currentMode;
 
         [Header("Debug (read-only saat Play)")]
-        [SerializeField] private Slot[] slots = new Slot[5];
+        [SerializeField] private Slot[] slots = new Slot[4];
 
         // Cached
         private PlayerColorState _colorState;
@@ -48,7 +48,7 @@ namespace Chromalit.Color
             HandleInput();
         }
 
-        // ─── Input 1-5 ──────────────────────────────────────
+        // ─── Input 1-4 ──────────────────────────────────────
 
         private void HandleInput()
         {
@@ -56,7 +56,6 @@ namespace Chromalit.Color
             if (Input.GetKeyDown(KeyCode.Alpha2)) Use(1);
             if (Input.GetKeyDown(KeyCode.Alpha3)) Use(2);
             if (Input.GetKeyDown(KeyCode.Alpha4)) Use(3);
-            if (Input.GetKeyDown(KeyCode.Alpha5)) Use(4);
         }
 
         // ─── Add ────────────────────────────────────────────

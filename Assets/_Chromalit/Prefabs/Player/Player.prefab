@@ -63,6 +63,7 @@ GameObject:
   - component: {fileID: 9195772025432771524}
   - component: {fileID: 6928848317790742870}
   - component: {fileID: 898575599566086367}
+  - component: {fileID: -7603351605376380792}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -261,15 +262,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Color.ColorInventory
   currentMode: {fileID: 11400000, guid: 4313eb8d28e6d41a9a0153601105811d, type: 2}
   slots:
+  - color: {fileID: 11400000, guid: d9d8bcc1aa4dc4a588ea7d9f3620ff54, type: 2}
+    count: 0
+  - color: {fileID: 11400000, guid: 20e1fbf5787f44176af89c714f857287, type: 2}
+    count: 0
+  - color: {fileID: 11400000, guid: 80861b7d62b164e8c860c9dd63b58b68, type: 2}
+    count: 0
   - color: {fileID: 11400000, guid: 23fcfe4c8f48d4e6f9821c45045da25d, type: 2}
-    count: 1
-  - color: {fileID: 0}
-    count: 0
-  - color: {fileID: 0}
-    count: 0
-  - color: {fileID: 0}
-    count: 0
-  - color: {fileID: 0}
     count: 0
 --- !u!114 &9195772025432771524
 MonoBehaviour:
@@ -327,3 +326,16 @@ MonoBehaviour:
     controller: {fileID: 9100000, guid: 1a0945680077b1c408265a921e9576da, type: 2}
   - colorType: 3
     controller: {fileID: 9100000, guid: 315b45540f74b534989f1f4840578609, type: 2}
+--- !u!114 &-7603351605376380792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6507257446208096066}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d73fab94f389f4a9083dc141ef83e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Player.KeyHolder
+  keyCount: 0

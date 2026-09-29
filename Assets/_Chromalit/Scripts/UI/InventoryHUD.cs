@@ -8,11 +8,11 @@ namespace Chromalit.UI
 {
     public class InventoryHUD : MonoBehaviour
     {
-        [Header("Slot UI (drag 5 slot)")]
-        [SerializeField] private Image[] slotBackgrounds = new Image[5];
-        [SerializeField] private Image[] slotColorIcons = new Image[5];
-        [SerializeField] private TextMeshProUGUI[] slotCountTexts = new TextMeshProUGUI[5];
-        [SerializeField] private TextMeshProUGUI[] slotKeyTexts = new TextMeshProUGUI[5];
+        [Header("Slot UI (drag 4 slot)")]
+        [SerializeField] private Image[] slotBackgrounds = new Image[4];
+        [SerializeField] private Image[] slotColorIcons = new Image[4];
+        [SerializeField] private TextMeshProUGUI[] slotCountTexts = new TextMeshProUGUI[4];
+        [SerializeField] private TextMeshProUGUI[] slotKeyTexts = new TextMeshProUGUI[4];
 
         [Header("Active Color Indicator")]
         [SerializeField] private Image activeColorIcon;
@@ -92,8 +92,10 @@ namespace Chromalit.UI
                 {
                     if (hasColor)
                     {
-                        slotColorIcons[i].color = slots[i].color.displayColor;
                         slotColorIcons[i].gameObject.SetActive(true);
+                        UnityEngine.Color c = slots[i].color.displayColor;
+                        c.a = 1f;
+                        slotColorIcons[i].color = c;
                     }
                     else
                     {
@@ -115,13 +117,18 @@ namespace Chromalit.UI
         {
             if (activeColorIcon != null && color != null)
             {
-                activeColorIcon.color = color.displayColor;
+                UnityEngine.Color c = color.displayColor;
+                c.a = 1f;
+                activeColorIcon.color = c;
             }
 
             if (source != ColorSource.Collectible)
             {
                 ResetCountdownUI();
             }
+
+            // Refresh slot karena warna dari inventory mungkin berkurang
+            RefreshSlots();
         }
 
         // ─── Countdown ──────────────────────────────────────
