@@ -11,10 +11,10 @@ namespace Chromalit.Core
 
         [Header("Bounds (auto-calculated from Ground)")]
         [SerializeField] private Transform groundTransform;
+        [SerializeField] private bool clampY = true;
 
-        private float _minX;
-        private float _maxX;
-        private float _minY;
+        private float _minX, _maxX, _minY, _maxY;
+        private bool _hasBounds;
         private Camera _cam;
 
         private void Awake()
@@ -23,48 +23,69 @@ namespace Chromalit.Core
             CalculateBounds();
         }
 
+        public void SetTarget(Transform newTarget)
+        {
+            target = newTarget;
+        }
+
         private void CalculateBounds()
         {
+            _hasBounds = false;
             if (groundTransform == null || _cam == null) return;
 
-            float groundLeft, groundRight, groundTop;
+            float left, right, bottom, top;
 
-            // Cek apakah ground pakai Tilemap
-            var tilemap = groundTransform.GetComponent<UnityEngine.Tilemaps.Tilemap>();
+            var tilemap = groundTransform.GetComponent<Tilemap>();
             if (tilemap != null)
             {
                 tilemap.CompressBounds();
-                var bounds = tilemap.localBounds;
-                groundLeft = groundTransform.position.x + bounds.min.x;
-                groundRight = groundTransform.position.x + bounds.max.x;
-                groundTop = groundTransform.position.y + bounds.max.y;
+                Bounds b = tilemap.localBounds;
+                Vector3 p = groundTransform.position;
+                left = p.x + b.min.x;
+                right = p.x + b.max.x;
+                bottom = p.y + b.min.y;
+                top = p.y + b.max.y;
             }
             else
             {
-                float groundHalfWidth = groundTransform.localScale.x / 2f;
-                groundLeft = groundTransform.position.x - groundHalfWidth;
-                groundRight = groundTransform.position.x + groundHalfWidth;
-                groundTop = groundTransform.position.y + (groundTransform.localScale.y / 2f);
+                Vector3 s = groundTransform.lossyScale;
+                Vector3 p = groundTransform.position;
+                left = p.x - s.x / 2f;
+                right = p.x + s.x / 2f;
+                bottom = p.y - s.y / 2f;
+                top = p.y + s.y / 2f;
             }
 
-            float camHalfWidth = _cam.orthographicSize * _cam.aspect;
+            float halfH = _cam.orthographicSize;
+            float halfW = halfH * _cam.aspect;
 
-            _minX = groundLeft + camHalfWidth;
-            _maxX = groundRight - camHalfWidth;
-            _minY = groundTop + _cam.orthographicSize * 0.3f;
+            _minX = left + halfW;
+            _maxX = right - halfW;
+            _minY = bottom + halfH;          // kamera nggak turun di bawah dasar level
+            _maxY = top + halfH * 2f;        // kasih ruang di atas platform tertinggi
+
+            // Kalau level lebih sempit/pendek dari kamera, kunci di tengah
+            if (_minX > _maxX) _minX = _maxX = (left + right) / 2f;
+            if (_minY > _maxY) _minY = _maxY = (bottom + top) / 2f;
+
+            _hasBounds = true;
         }
 
         private void LateUpdate()
         {
             if (target == null) return;
 
-            Vector3 desiredPosition = target.position + offset;
-            Vector3 smoothed = Vector3.Lerp(transform.position, desiredPosition, smoothSpeed * Time.deltaTime);
+            Vector3 desired = target.position + offset;
+            Vector3 pos = Vector3.Lerp(transform.position, desired, smoothSpeed * Time.deltaTime);
 
-            smoothed.x = Mathf.Clamp(smoothed.x, _minX, _maxX);
-            smoothed.y = Mathf.Max(smoothed.y, _minY);
+            if (_hasBounds)
+            {
+                pos.x = Mathf.Clamp(pos.x, _minX, _maxX);
+                if (clampY) pos.y = Mathf.Clamp(pos.y, _minY, _maxY);
+            }
 
-            transform.position = smoothed;
+            pos.z = offset.z;
+            transform.position = pos;
         }
     }
 }

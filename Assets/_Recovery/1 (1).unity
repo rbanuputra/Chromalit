@@ -1391,6 +1391,7 @@ MonoBehaviour:
   offset: {x: 0, y: 1, z: -10}
   smoothSpeed: 5
   groundTransform: {fileID: 1232126983}
+  clampY: 1
 --- !u!114 &1154655224
 MonoBehaviour:
   m_ObjectHideFlags: 0
