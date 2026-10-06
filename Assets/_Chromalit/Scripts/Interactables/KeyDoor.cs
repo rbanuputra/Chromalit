@@ -1,5 +1,6 @@
 using UnityEngine;
 using Chromalit.Player;
+using Chromalit.UI;
 
 namespace Chromalit.Interactables
 {
@@ -14,15 +15,14 @@ namespace Chromalit.Interactables
         [SerializeField] private float detectRadius = 2f;
         [SerializeField] private string uniqueId;
 
+        [Header("Prompt")]
+        [SerializeField] private InteractPrompt prompt;
+
         private SpriteRenderer _renderer;
         private Collider2D _collider;
         private bool _opened;
-        private bool _playerInRange;
         private KeyHolder _nearbyPlayer;
-
-        // UI Prompt
-        private GameObject _promptUI;
-        private TMPro.TextMeshPro _promptText;
+        private Transform _player;
 
         private void Reset()
         {
@@ -34,76 +34,48 @@ namespace Chromalit.Interactables
         {
             _renderer = GetComponent<SpriteRenderer>();
             _collider = GetComponent<Collider2D>();
-            _collider.isTrigger = false; // solid wall
+            _collider.isTrigger = false;
 
             if (closedSprite != null)
                 _renderer.sprite = closedSprite;
-
-            CreatePromptUI();
-        }
-
-        private void CreatePromptUI()
-        {
-            _promptUI = new GameObject("DoorPrompt");
-            _promptUI.transform.SetParent(transform);
-            _promptUI.transform.localPosition = new Vector3(0f, 2.5f, 0f);
-
-            _promptText = _promptUI.AddComponent<TMPro.TextMeshPro>();
-            _promptText.text = "Tekan E (Butuh Kunci)";
-            _promptText.fontSize = 3f;
-            _promptText.alignment = TMPro.TextAlignmentOptions.Center;
-            _promptText.sortingOrder = 10;
-
-            _promptUI.SetActive(false);
         }
 
         private void Update()
         {
             if (_opened) return;
 
-            CheckPlayerInRange();
+            UpdatePrompt();
 
-            if (_playerInRange && _nearbyPlayer != null && Input.GetKeyDown(KeyCode.E))
-            {
+            if (_nearbyPlayer != null && Input.GetKeyDown(KeyCode.E))
                 TryOpen();
-            }
         }
 
-        private void CheckPlayerInRange()
+        private void UpdatePrompt()
         {
-            GameObject playerObj = GameObject.FindWithTag("Player");
-            if (playerObj == null || !playerObj.activeInHierarchy)
+            if (_player == null)
             {
-                _playerInRange = false;
-                _promptUI.SetActive(false);
+                GameObject p = GameObject.FindWithTag("Player");
+                if (p != null) _player = p.transform;
+            }
+
+            bool inRange = _player != null
+                && _player.gameObject.activeInHierarchy
+                && Vector2.Distance(transform.position, _player.position) <= detectRadius;
+
+            if (!inRange)
+            {
+                _nearbyPlayer = null;
+                if (prompt != null) prompt.Hide();
                 return;
             }
 
-            float dist = Vector2.Distance(transform.position, playerObj.transform.position);
-            _playerInRange = dist <= detectRadius;
+            _nearbyPlayer = _player.GetComponent<KeyHolder>();
+            if (prompt == null) return;
 
-            if (_playerInRange)
-            {
-                _nearbyPlayer = playerObj.GetComponent<KeyHolder>();
-
-                if (_nearbyPlayer != null && _nearbyPlayer.KeyCount > 0)
-                {
-                    _promptText.text = "Tekan E (Buka Pintu)";
-                    _promptText.color = UnityEngine.Color.green;
-                }
-                else
-                {
-                    _promptText.text = "Butuh Kunci!";
-                    _promptText.color = UnityEngine.Color.red;
-                }
-
-                _promptUI.SetActive(true);
-            }
+            if (_nearbyPlayer != null && _nearbyPlayer.KeyCount > 0)
+                prompt.Show("E", "Buka Pintu", PromptState.Ready);
             else
-            {
-                _nearbyPlayer = null;
-                _promptUI.SetActive(false);
-            }
+                prompt.Show("", "Butuh Kunci", PromptState.Locked);
         }
 
         private void TryOpen()
@@ -112,11 +84,8 @@ namespace Chromalit.Interactables
 
             if (_nearbyPlayer.UseKey())
             {
+                if (prompt != null) prompt.Press();
                 Open();
-            }
-            else
-            {
-                Debug.Log("Butuh kunci untuk membuka pintu!");
             }
         }
 
@@ -124,12 +93,21 @@ namespace Chromalit.Interactables
         {
             _opened = true;
             _collider.enabled = false;
-            _promptUI.SetActive(false);
+            if (prompt != null) prompt.Hide();
 
             if (openedSprite != null)
                 _renderer.sprite = openedSprite;
 
-            Debug.Log("Pintu terbuka!");
+            StartCoroutine(ShowLevelComplete());
+        }
+
+        private System.Collections.IEnumerator ShowLevelComplete()
+        {
+            yield return new WaitForSecondsRealtime(0.6f);
+
+            LevelCompleteUI ui = FindFirstObjectByType<LevelCompleteUI>();
+            if (ui != null) ui.Show();
+            else Debug.LogWarning("LevelCompleteUI tidak ditemukan di scene!");
         }
 
         public void ResetDoor()
@@ -137,12 +115,9 @@ namespace Chromalit.Interactables
             _opened = false;
             _collider.enabled = true;
             _collider.isTrigger = false;
-
-            if (closedSprite != null)
-                _renderer.sprite = closedSprite;
+            if (closedSprite != null) _renderer.sprite = closedSprite;
         }
 
-        // Gizmo radius di Scene view
         private void OnDrawGizmosSelected()
         {
             Gizmos.color = UnityEngine.Color.cyan;

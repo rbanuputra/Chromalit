@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Chromalit.UI;
 
 namespace Chromalit.UI
 {
@@ -16,12 +17,12 @@ namespace Chromalit.UI
 
         private void Update()
         {
+            if (LevelCompleteUI.IsOpen) return;   // ← tambahin ini
+
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                if (_isPaused)
-                    Resume();
-                else
-                    Pause();
+                if (_isPaused) Resume();
+                else Pause();
             }
         }
 

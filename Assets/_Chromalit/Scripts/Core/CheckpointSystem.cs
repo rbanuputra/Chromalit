@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Chromalit.Color;
 using Chromalit.Player;
 using Chromalit.Traps;
@@ -8,6 +9,10 @@ namespace Chromalit.Core
 {
     public class CheckpointSystem : MonoBehaviour
     {
+        [Header("Mode")]
+        [Tooltip("ON = mati langsung restart level dari awal. OFF = balik ke checkpoint terakhir.")]
+        [SerializeField] private bool restartOnDeath = true;
+
         [System.Serializable]
         public struct LevelSnapshot
         {
@@ -21,7 +26,6 @@ namespace Chromalit.Core
         private bool _hasCheckpoint;
         private Vector3 _startPosition;
 
-        // Cached
         private PlayerColorState _colorState;
         private ColorInventory _inventory;
         private Rigidbody2D _rb;
@@ -42,28 +46,19 @@ namespace Chromalit.Core
             }
         }
 
-        /// <summary>
-        /// Simpan snapshot saat player sentuh checkpoint.
-        /// </summary>
         public void SaveCheckpoint()
         {
             _lastCheckpoint.inventory = _inventory.TakeSnapshot();
             _lastCheckpoint.playerPosition = transform.position;
 
-            ColorCollectible[] allCollectibles = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
             var collectedIds = new System.Collections.Generic.List<string>();
-            foreach (var c in allCollectibles)
-            {
+            foreach (var c in FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None))
                 if (c.IsCollected) collectedIds.Add(c.UniqueId);
-            }
             _lastCheckpoint.collectedItemIds = collectedIds.ToArray();
 
-            PaintBomb[] allBombs = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
             var explodedIds = new System.Collections.Generic.List<string>();
-            foreach (var b in allBombs)
-            {
+            foreach (var b in FindObjectsByType<PaintBomb>(FindObjectsSortMode.None))
                 if (b.IsExploded) explodedIds.Add(b.UniqueId);
-            }
             _lastCheckpoint.explodedBombIds = explodedIds.ToArray();
 
             _hasCheckpoint = true;
@@ -71,95 +66,48 @@ namespace Chromalit.Core
         }
 
         /// <summary>
-        /// Kembalikan semua kondisi ke checkpoint terakhir.
-        /// Kalau belum ada checkpoint, respawn ke posisi awal level.
+        /// Dipanggil saat mati (trap) atau tekan R.
         /// </summary>
         public void Restore()
         {
-            // Reset velocity biar player nggak lanjut gerak setelah respawn
-            if (_rb != null)
+            if (restartOnDeath || !_hasCheckpoint)
             {
-                _rb.linearVelocity = Vector2.zero;
-            }
-
-            // Reset warna ke Putih
-            _colorState.Neutralize();
-
-            if (!_hasCheckpoint)
-            {
-                // Belum ada checkpoint — respawn ke posisi awal
-                transform.position = _startPosition;
-                _inventory.ClearAll();
-
-                // Reset semua collectible dan bom ke kondisi awal
-                ResetAllCollectibles();
-                ResetAllBombs();
-
-                Debug.Log("No checkpoint — restored to start position!");
+                RestartLevel();
                 return;
             }
 
-            // Restore inventory
-            _inventory.RestoreSnapshot(_lastCheckpoint.inventory);
+            RestoreToCheckpoint();
+        }
 
-            // Restore posisi
+        public void RestartLevel()
+        {
+            Time.timeScale = 1f;
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+
+        private void RestoreToCheckpoint()
+        {
+            if (_rb != null) _rb.linearVelocity = Vector2.zero;
+            _colorState.Neutralize();
+
+            _inventory.RestoreSnapshot(_lastCheckpoint.inventory);
             transform.position = _lastCheckpoint.playerPosition;
 
-            // Restore collectible
-            ColorCollectible[] allCollectibles = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
-            foreach (var c in allCollectibles)
+            foreach (var c in FindObjectsByType<ColorCollectible>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                bool wasCollectedAtCheckpoint = System.Array.Exists(
-                    _lastCheckpoint.collectedItemIds, id => id == c.UniqueId
-                );
-
-                if (wasCollectedAtCheckpoint)
-                {
-                    c.gameObject.SetActive(false);
-                }
-                else
-                {
-                    c.ResetCollectible();
-                }
+                bool taken = System.Array.Exists(_lastCheckpoint.collectedItemIds, id => id == c.UniqueId);
+                if (taken) c.gameObject.SetActive(false);
+                else c.ResetCollectible();
             }
 
-            // Restore bom
-            PaintBomb[] allBombs = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
-            foreach (var b in allBombs)
+            foreach (var b in FindObjectsByType<PaintBomb>(FindObjectsInactive.Include, FindObjectsSortMode.None))
             {
-                bool wasExplodedAtCheckpoint = System.Array.Exists(
-                    _lastCheckpoint.explodedBombIds, id => id == b.UniqueId
-                );
-
-                if (wasExplodedAtCheckpoint)
-                {
-                    b.gameObject.SetActive(false);
-                }
-                else
-                {
-                    b.ResetBomb();
-                }
+                bool exploded = System.Array.Exists(_lastCheckpoint.explodedBombIds, id => id == b.UniqueId);
+                if (exploded) b.gameObject.SetActive(false);
+                else b.ResetBomb();
             }
 
             Debug.Log("Restored to checkpoint!");
-        }
-
-        private void ResetAllCollectibles()
-        {
-            ColorCollectible[] all = FindObjectsByType<ColorCollectible>(FindObjectsSortMode.None);
-            foreach (var c in all)
-            {
-                c.ResetCollectible();
-            }
-        }
-
-        private void ResetAllBombs()
-        {
-            PaintBomb[] all = FindObjectsByType<PaintBomb>(FindObjectsSortMode.None);
-            foreach (var b in all)
-            {
-                b.ResetBomb();
-            }
         }
 
         public bool HasCheckpoint => _hasCheckpoint;
