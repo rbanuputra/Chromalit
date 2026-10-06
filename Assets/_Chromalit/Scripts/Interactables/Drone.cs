@@ -33,6 +33,8 @@ namespace Chromalit.Interactables
 
         private void Update()
         {
+            if (HintPanelUI.BlocksInput) return;
+
             if (_isControlled)
             {
                 float h = Input.GetAxisRaw("Horizontal");

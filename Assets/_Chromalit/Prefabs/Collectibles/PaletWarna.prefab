@@ -151,11 +151,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b62000655cfdc7c47905a092de2eb7dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Collectibles.RandomColorCollectible
-  possibleColors:
-  - {fileID: 11400000, guid: d9d8bcc1aa4dc4a588ea7d9f3620ff54, type: 2}
-  - {fileID: 11400000, guid: 20e1fbf5787f44176af89c714f857287, type: 2}
-  - {fileID: 11400000, guid: 80861b7d62b164e8c860c9dd63b58b68, type: 2}
-  - {fileID: 11400000, guid: 23fcfe4c8f48d4e6f9821c45045da25d, type: 2}
+  colorChances:
+  - color: {fileID: 11400000, guid: d9d8bcc1aa4dc4a588ea7d9f3620ff54, type: 2}
+    weight: 25
+    chance: 25%
+  - color: {fileID: 11400000, guid: 20e1fbf5787f44176af89c714f857287, type: 2}
+    weight: 25
+    chance: 25%
+  - color: {fileID: 11400000, guid: 80861b7d62b164e8c860c9dd63b58b68, type: 2}
+    weight: 25
+    chance: 25%
+  - color: {fileID: 11400000, guid: 23fcfe4c8f48d4e6f9821c45045da25d, type: 2}
+    weight: 25
+    chance: 25%
   iconRenderer: {fileID: 0}
+  cycleColorVisual: 1
   colorChangeInterval: 0.3
   uniqueId: 7eb52762-9c6f-4ec0-93aa-04e8ed9da45b

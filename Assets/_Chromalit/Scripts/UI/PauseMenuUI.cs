@@ -1,23 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Chromalit.UI;
 
 namespace Chromalit.UI
 {
     public class PauseMenuUI : MonoBehaviour
     {
-        [SerializeField] private GameObject pausePanel;
+        [SerializeField] private PanelAnimator pausePanel;
+        [SerializeField] private string mainMenuSceneName = "MainMenu";
 
         private bool _isPaused;
 
-        private void Start()
-        {
-            pausePanel.SetActive(false);
-        }
+        private void Start() => pausePanel.HideInstant();
 
         private void Update()
         {
-            if (LevelCompleteUI.IsOpen) return;   // ← tambahin ini
+            if (LevelCompleteUI.IsOpen || HintPanelUI.BlocksInput) return;
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
@@ -29,27 +26,27 @@ namespace Chromalit.UI
         public void Pause()
         {
             _isPaused = true;
-            pausePanel.SetActive(true);
             Time.timeScale = 0f;
+            pausePanel.Show();
         }
 
         public void Resume()
         {
             _isPaused = false;
-            pausePanel.SetActive(false);
             Time.timeScale = 1f;
+            pausePanel.Hide();
         }
 
         public void RestartLevel()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
         public void GoToMainMenu()
         {
             Time.timeScale = 1f;
-            SceneManager.LoadScene("MainMenu");
+            SceneManager.LoadScene(mainMenuSceneName);
         }
     }
 }

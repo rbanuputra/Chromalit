@@ -43,6 +43,7 @@ namespace Chromalit.Interactables
         private void Update()
         {
             if (_opened) return;
+            if (HintPanelUI.BlocksInput) { if (prompt != null) prompt.Hide(); return; }
 
             UpdatePrompt();
 

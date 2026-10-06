@@ -1,27 +1,44 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Chromalit.UI
 {
     public class MainMenuUI : MonoBehaviour
     {
-        [SerializeField] private GameObject mainPanel;
-        [SerializeField] private GameObject levelSelectPanel;
+        [SerializeField] private PanelAnimator mainPanel;
+        [SerializeField] private PanelAnimator levelSelectPanel;
+
+        private bool _inLevelSelect;
 
         private void Start()
         {
-            ShowMainMenu();
+            levelSelectPanel.HideInstant();
+            mainPanel.Show();
+        }
+
+        private void Update()
+        {
+            if (_inLevelSelect && Input.GetKeyDown(KeyCode.Escape))
+                ShowMainMenu();
         }
 
         public void ShowMainMenu()
         {
-            mainPanel.SetActive(true);
-            levelSelectPanel.SetActive(false);
+            _inLevelSelect = false;
+            StartCoroutine(Switch(levelSelectPanel, mainPanel));
         }
 
         public void ShowLevelSelect()
         {
-            mainPanel.SetActive(false);
-            levelSelectPanel.SetActive(true);
+            _inLevelSelect = true;
+            StartCoroutine(Switch(mainPanel, levelSelectPanel));
+        }
+
+        private IEnumerator Switch(PanelAnimator from, PanelAnimator to)
+        {
+            from.Hide();
+            yield return new WaitForSecondsRealtime(0.12f);
+            to.Show();
         }
     }
 }

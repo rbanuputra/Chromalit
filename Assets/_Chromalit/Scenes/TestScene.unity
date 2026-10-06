@@ -706,6 +706,7 @@ MonoBehaviour:
   offset: {x: 0, y: 1, z: -10}
   smoothSpeed: 5
   groundTransform: {fileID: 1838080306}
+  clampY: 1
 --- !u!1 &1097172490
 GameObject:
   m_ObjectHideFlags: 0
@@ -1535,6 +1536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcd42dd86920f420b9d8aebc9a8fafdb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chromalit.Core.CheckpointSystem
+  restartOnDeath: 1
 --- !u!114 &1942240830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1579,79 +1581,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1001 &3955189928689188088
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 3580227367651081462, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_Size.y
-      value: 0.87958884
-      objectReference: {fileID: 0}
-    - target: {fileID: 3580227367651081462, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.06320302
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 18.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -3.95
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5421650331349661859, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7075279254584805350, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
-      propertyPath: m_Name
-      value: WaterZone
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 2b6b68b0e7c6bad4e9fa59b6b5a18f2b, type: 3}
 --- !u!1001 &5910151561357877601
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1830,4 +1759,3 @@ SceneRoots:
   - {fileID: 7908716612865278344}
   - {fileID: 1913638808}
   - {fileID: 5910151561357877601}
-  - {fileID: 3955189928689188088}
